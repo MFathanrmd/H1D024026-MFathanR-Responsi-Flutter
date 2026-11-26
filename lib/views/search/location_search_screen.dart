@@ -19,6 +19,15 @@ class _LocationSearchScreenState extends State<LocationSearchScreen> {
   final TextEditingController _searchController = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+    final q = Uri.base.queryParameters['q'];
+    if (q != null && q.isNotEmpty) {
+      _searchController.text = q;
+    }
+  }
+
+  @override
   void dispose() {
     _searchController.dispose();
     super.dispose();
@@ -35,8 +44,18 @@ class _LocationSearchScreenState extends State<LocationSearchScreen> {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
+    final initialQuery = Uri.base.queryParameters['q'];
+
     return ChangeNotifierProvider(
-      create: (_) => LocationSearchViewModel(),
+      create: (_) {
+        final vm = LocationSearchViewModel();
+        if (initialQuery != null && initialQuery.isNotEmpty) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            vm.searchCity(initialQuery);
+          });
+        }
+        return vm;
+      },
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Cari Lokasi'),

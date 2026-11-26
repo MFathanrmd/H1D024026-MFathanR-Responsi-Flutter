@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'core/theme/app_theme.dart';
 import 'viewmodels/weather_viewmodel.dart';
 import 'views/home/weather_screen.dart';
+import 'views/search/location_search_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,7 +20,8 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final Widget? home;
+  const MyApp({super.key, this.home});
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +35,9 @@ class MyApp extends StatelessWidget {
         theme: AppTheme.lightTheme,
         darkTheme: AppTheme.darkTheme,
         themeMode: ThemeMode.system,
-        home: const WeatherScreen(),
+        home: home ?? (Uri.base.queryParameters['screen'] == 'search'
+            ? const LocationSearchScreen()
+            : const WeatherScreen()),
       ),
     );
   }
